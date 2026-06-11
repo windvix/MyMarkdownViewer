@@ -14,7 +14,6 @@
   "build": {
     "appId": "com.windvix.markdownviewer",
     "productName": "Markdown Viewer",
-    "electronDist": "node_modules/electron/dist",
     "files": [
       "index.html",
       "styles.css",
