@@ -2,6 +2,8 @@
 
 A lightweight Markdown viewer focused entirely on reading experience.
 
+![Simple Markdown Viewer preview](images/demo.png)
+
 This project was created after trying many Markdown viewers and realizing that most of them suffer from the same problems:
 
 * Too many features that are rarely used
