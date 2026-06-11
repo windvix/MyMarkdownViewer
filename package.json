@@ -1,0 +1,62 @@
+{
+  "name": "my-markdown-viewer",
+  "version": "0.1.0",
+  "description": "A local read-only Markdown viewer with a clean AI-message-like reading style.",
+  "main": "main.js",
+  "author": "windvix",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win"
+  },
+  "build": {
+    "appId": "com.windvix.markdownviewer",
+    "productName": "Markdown Viewer",
+    "files": [
+      "index.html",
+      "styles.css",
+      "app.js",
+      "main.js",
+      "preload.js",
+      "package.json",
+      "node_modules/marked/lib/marked.umd.js",
+      "node_modules/dompurify/dist/purify.min.js",
+      "node_modules/@highlightjs/cdn-assets/highlight.min.js",
+      "node_modules/@highlightjs/cdn-assets/styles/github.min.css",
+      "node_modules/lucide/dist/umd/lucide.min.js"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "fileAssociations": [
+        {
+          "ext": "md",
+          "name": "Markdown Document",
+          "description": "Markdown document"
+        },
+        {
+          "ext": "markdown",
+          "name": "Markdown Document",
+          "description": "Markdown document"
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "devDependencies": {
+    "electron": "^36.4.0",
+    "electron-builder": "^26.0.12"
+  },
+  "dependencies": {
+    "@highlightjs/cdn-assets": "^11.11.1",
+    "dompurify": "^3.4.9",
+    "lucide": "^1.17.0",
+    "marked": "^18.0.5"
+  }
+}

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Markdown Viewer</title>
+    <link rel="stylesheet" href="./node_modules/@highlightjs/cdn-assets/styles/github.min.css" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">M</span>
+          <div>
+            <h1 id="documentTitle">Markdown Viewer</h1>
+            <p id="documentMeta">打开或拖入 Markdown 文件</p>
+          </div>
+        </div>
+
+        <div class="topbar-actions" aria-label="页面操作">
+          <button class="icon-button primary-action" id="openFileButton" type="button" title="打开 Markdown 文件" aria-label="打开 Markdown 文件">
+            <i data-lucide="folder-open"></i>
+          </button>
+          <button class="icon-button" id="sampleButton" type="button" title="查看示例" aria-label="查看示例">
+            <i data-lucide="file-text"></i>
+          </button>
+          <button class="icon-button" id="copyHtmlButton" type="button" title="复制 HTML" aria-label="复制 HTML">
+            <i data-lucide="copy"></i>
+          </button>
+          <button class="icon-button" id="downloadButton" type="button" title="导出 HTML" aria-label="导出 HTML">
+            <i data-lucide="download"></i>
+          </button>
+          <button class="icon-button" id="themeButton" type="button" title="切换主题" aria-label="切换主题">
+            <i data-lucide="moon"></i>
+          </button>
+        </div>
+      </header>
+
+      <main class="reader-shell" id="dropZone">
+        <article id="preview" class="markdown-body" aria-live="polite"></article>
+        <div id="emptyState" class="empty-state">
+          <i data-lucide="file-up"></i>
+          <h2>选择一个 Markdown 文件</h2>
+          <p>支持 .md、.markdown 和 .txt</p>
+          <button id="emptyOpenButton" type="button">打开文件</button>
+        </div>
+      </main>
+    </div>
+
+    <input id="fileInput" type="file" accept=".md,.markdown,.txt,text/markdown,text/plain" hidden />
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script src="./node_modules/marked/lib/marked.umd.js"></script>
+    <script src="./node_modules/dompurify/dist/purify.min.js"></script>
+    <script src="./node_modules/@highlightjs/cdn-assets/highlight.min.js"></script>
+    <script src="./node_modules/lucide/dist/umd/lucide.min.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
