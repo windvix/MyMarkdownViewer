@@ -1,17 +1,20 @@
 {
   "name": "my-markdown-viewer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A local read-only Markdown viewer with a clean AI-message-like reading style.",
   "main": "main.js",
   "author": "windvix",
   "license": "MIT",
   "scripts": {
     "start": "electron .",
-    "dist": "electron-builder --win"
+    "dist": "electron-builder",
+    "dist:mac": "electron-builder --mac dmg zip",
+    "dist:win": "electron-builder --win"
   },
   "build": {
     "appId": "com.windvix.markdownviewer",
     "productName": "Markdown Viewer",
+    "electronDist": "node_modules/electron/dist",
     "files": [
       "index.html",
       "styles.css",
@@ -25,6 +28,27 @@
       "node_modules/@highlightjs/cdn-assets/styles/github.min.css",
       "node_modules/lucide/dist/umd/lucide.min.js"
     ],
+    "mac": {
+      "category": "public.app-category.productivity",
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "fileAssociations": [
+        {
+          "ext": "md",
+          "name": "Markdown Document",
+          "description": "Markdown document",
+          "role": "Viewer"
+        },
+        {
+          "ext": "markdown",
+          "name": "Markdown Document",
+          "description": "Markdown document",
+          "role": "Viewer"
+        }
+      ]
+    },
     "win": {
       "target": [
         "nsis",

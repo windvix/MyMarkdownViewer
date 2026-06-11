@@ -19,14 +19,45 @@ async function readMarkdownFile(filePath) {
 }
 
 async function sendFileToWindow(filePath) {
-  if (!mainWindow || !filePath) return;
+  if (!hasUsableWindow() || !filePath) return;
 
   try {
     const payload = await readMarkdownFile(filePath);
+    if (!hasUsableWindow()) {
+      pendingFilePath = filePath;
+      return;
+    }
+
     mainWindow.webContents.send("markdown-file-opened", payload);
   } catch (error) {
     dialog.showErrorBox("无法打开文件", error.message);
   }
+}
+
+function hasUsableWindow() {
+  return mainWindow && !mainWindow.isDestroyed() && !mainWindow.webContents.isDestroyed();
+}
+
+function focusMainWindow() {
+  if (!hasUsableWindow()) return;
+
+  if (mainWindow.isMinimized()) mainWindow.restore();
+  mainWindow.focus();
+}
+
+function openFileWhenReady(filePath) {
+  if (!filePath) return;
+
+  pendingFilePath = filePath;
+
+  if (!hasUsableWindow()) {
+    if (app.isReady()) createWindow();
+    return;
+  }
+
+  focusMainWindow();
+  sendFileToWindow(pendingFilePath);
+  pendingFilePath = null;
 }
 
 function createWindow() {
@@ -42,6 +73,10 @@ function createWindow() {
       contextIsolation: true,
       nodeIntegration: false,
     },
+  });
+
+  mainWindow.on("closed", () => {
+    mainWindow = null;
   });
 
   mainWindow.loadFile("index.html");
@@ -63,11 +98,12 @@ if (!hasLock) {
 } else {
   app.on("second-instance", (_event, argv) => {
     const filePath = findMarkdownPath(argv);
-    if (mainWindow) {
-      if (mainWindow.isMinimized()) mainWindow.restore();
-      mainWindow.focus();
-      sendFileToWindow(filePath);
-    }
+    openFileWhenReady(filePath);
+  });
+
+  app.on("open-file", (event, filePath) => {
+    event.preventDefault();
+    openFileWhenReady(filePath);
   });
 
   app.whenReady().then(createWindow);
@@ -82,7 +118,7 @@ app.on("activate", () => {
 });
 
 ipcMain.handle("open-markdown-file", async () => {
-  const result = await dialog.showOpenDialog(mainWindow, {
+  const result = await dialog.showOpenDialog(hasUsableWindow() ? mainWindow : null, {
     title: "打开 Markdown 文件",
     properties: ["openFile"],
     filters: [

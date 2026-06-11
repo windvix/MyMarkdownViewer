@@ -40,6 +40,21 @@ This project follows a simple principle:
 * No unnecessary complexity
 * No feature bloat
 
+## Run Locally
+
+```bash
+npm install
+npm start
+```
+
+## Build For macOS
+
+```bash
+npm run dist:mac
+```
+
+The packaged app is written to the `dist` folder. On macOS, this creates a DMG installer and a ZIP archive.
+
 ## Ideal For
 
 * Project documentation
