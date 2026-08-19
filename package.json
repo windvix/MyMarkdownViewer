@@ -1,6 +1,6 @@
 {
   "name": "my-markdown-viewer",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A local read-only Markdown viewer with a clean AI-message-like reading style.",
   "main": "main.js",
   "author": "windvix",
@@ -38,13 +38,15 @@
           "ext": "md",
           "name": "Markdown Document",
           "description": "Markdown document",
-          "role": "Viewer"
+          "role": "Viewer",
+          "rank": "Owner"
         },
         {
           "ext": "markdown",
           "name": "Markdown Document",
           "description": "Markdown document",
-          "role": "Viewer"
+          "role": "Viewer",
+          "rank": "Owner"
         }
       ]
     },

@@ -1,9 +1,12 @@
 const { app, BrowserWindow, dialog, ipcMain, shell } = require("electron");
+const { execFile } = require("node:child_process");
 const fs = require("node:fs/promises");
 const path = require("node:path");
+const { promisify } = require("node:util");
 
 let mainWindow;
 let pendingFilePath = findMarkdownPath(process.argv.slice(1));
+const execFileAsync = promisify(execFile);
 
 function findMarkdownPath(args) {
   return args.find((arg) => /\.(md|markdown|txt)$/i.test(arg));
@@ -91,6 +94,39 @@ function createWindow() {
   });
 }
 
+async function registerMarkdownFileAssociations() {
+  if (process.platform !== "darwin" || !app.isPackaged) return;
+
+  const appBundlePath = path.dirname(path.dirname(path.dirname(process.execPath)));
+  const bundleId = "com.windvix.markdownviewer";
+
+  try {
+    await execFileAsync(
+      "/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister",
+      ["-f", appBundlePath],
+    );
+
+    await execFileAsync("/usr/bin/osascript", [
+      "-l",
+      "JavaScript",
+      "-e",
+      `
+        ObjC.import("CoreServices");
+        const bundleId = "${bundleId}";
+        const role = $.kLSRolesAll;
+        [
+          "net.daringfireball.markdown",
+          "public.markdown"
+        ].forEach((contentType) => {
+          $.LSSetDefaultRoleHandlerForContentType(contentType, role, bundleId);
+        });
+      `,
+    ]);
+  } catch (error) {
+    console.warn("Unable to register Markdown file associations:", error.message);
+  }
+}
+
 const hasLock = app.requestSingleInstanceLock();
 
 if (!hasLock) {
@@ -106,7 +142,10 @@ if (!hasLock) {
     openFileWhenReady(filePath);
   });
 
-  app.whenReady().then(createWindow);
+  app.whenReady().then(() => {
+    registerMarkdownFileAssociations();
+    createWindow();
+  });
 }
 
 app.on("window-all-closed", () => {
